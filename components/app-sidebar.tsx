@@ -3,8 +3,6 @@
 import * as React from "react"
 import {
   IconCamera,
-  IconChartBar,
-  IconDashboard,
   IconDatabase,
   IconFileAi,
   IconFileDescription,
@@ -16,11 +14,11 @@ import {
   IconReport,
   IconSearch,
   IconSettings,
-  IconUsers,
+  IconDashboard,
 } from "@tabler/icons-react"
 
-import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
+import { NavDocuments } from "@/components/nav-documents"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import {
@@ -36,9 +34,14 @@ import {
 import { Session } from "better-auth"
 import { useSession } from "@/lib/auth"
 
-
-
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ 
+  activeItem, 
+  setActiveItem, 
+  ...props 
+}: React.ComponentProps<typeof Sidebar> & {
+  activeItem: string
+  setActiveItem: (item: string) => void
+}) {
   const sessionUser = useSession().data?.user
 
   const data = {
@@ -49,29 +52,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     },
     navMain: [
       {
-        title: "Dashboard",
+        title: "Général",
         url: "#",
         icon: IconDashboard,
       },
       {
-        title: "Lifecycle",
+        title: "Équipe",
         url: "#",
         icon: IconListDetails,
       },
       {
-        title: "Analytics",
-        url: "#",
-        icon: IconChartBar,
-      },
-      {
-        title: "Projects",
+        title: "Projets",
         url: "#",
         icon: IconFolder,
-      },
-      {
-        title: "Team",
-        url: "#",
-        icon: IconUsers,
       },
     ],
     navClouds: [
@@ -157,6 +150,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
     ],
   }
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -168,14 +162,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <span className="text-base font-semibold">Orvika</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain 
+          items={data.navMain} 
+          activeItem={activeItem} 
+          setActiveItem={setActiveItem} 
+        />
         <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>

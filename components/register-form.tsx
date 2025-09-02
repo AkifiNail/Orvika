@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label"
 import { authClient } from "@/lib/auth-client"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { motion, AnimatePresence } from "framer-motion"
 
 export function RegisterForm({
   className,
@@ -83,138 +84,264 @@ export function RegisterForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-xl">Créer un compte</CardTitle>
-          <CardDescription>
-            Inscrivez-vous avec Google ou créez votre compte
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleEmailRegister}>
-            <div className="grid gap-6">
-              <div className="flex flex-col gap-4">
-                <Button 
-                  type="button"
-                  variant="outline" 
-                  className="w-full"
-                  onClick={handleGoogleRegister}
-                  disabled={isLoading}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5 mr-2">
-                    <path
-                      d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  {isLoading ? "Inscription..." : "S'inscrire avec Google"}
-                </Button>
-              </div>
-              
-              <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                <span className="bg-card text-muted-foreground relative z-10 px-2">
-                  Ou créer un compte avec
-                </span>
-              </div>
-              
-              {error && (
-                <div className="text-sm text-red-600 text-center bg-red-50 p-2 rounded">
-                  {error}
-                </div>
-              )}
-              
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+      >
+        <Card>
+          <CardHeader className="text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.4 }}
+            >
+              <CardTitle className="text-xl">Créer un compte</CardTitle>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+            >
+              <CardDescription>
+                Inscrivez-vous avec Google ou créez votre compte
+              </CardDescription>
+            </motion.div>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleEmailRegister}>
               <div className="grid gap-6">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="grid gap-3">
-                    <Label htmlFor="firstName">Prénom</Label>
-                    <Input
-                      id="firstName"
-                      type="text"
-                      placeholder="Jean"
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      required
+                <motion.div
+                  className="flex flex-col gap-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.4 }}
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Button 
+                      type="button"
+                      variant="outline" 
+                      className="w-full"
+                      onClick={handleGoogleRegister}
                       disabled={isLoading}
-                    />
-                  </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="lastName">Nom</Label>
-                    <Input
-                      id="lastName"
-                      type="text"
-                      placeholder="Dupont"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      required
-                      disabled={isLoading}
-                    />
-                  </div>
+                    >
+                      <motion.svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        viewBox="0 0 24 24" 
+                        className="w-5 h-5 mr-2"
+                        whileHover={{ rotate: 360 }}
+                        transition={{ duration: 0.6 }}
+                      >
+                        <path
+                          d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
+                          fill="currentColor"
+                        />
+                      </motion.svg>
+                      {isLoading ? "Inscription..." : "S'inscrire avec Google"}
+                    </Button>
+                  </motion.div>
+                </motion.div>
+                
+                <motion.div 
+                  className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4, duration: 0.4 }}
+                >
+                  <span className="bg-card text-muted-foreground relative z-10 px-2">
+                    Ou créer un compte avec
+                  </span>
+                </motion.div>
+                
+                <AnimatePresence>
+                  {error && (
+                    <motion.div 
+                      className="text-sm text-red-600 text-center bg-red-50 p-2 rounded"
+                      initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {error}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                
+                <div className="grid gap-6">
+                  <motion.div
+                    className="grid grid-cols-2 gap-3"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5, duration: 0.4 }}
+                  >
+                    <div className="grid gap-3">
+                      <Label htmlFor="firstName">Prénom</Label>
+                      <motion.div
+                        whileFocus={{ scale: 1.01 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Input
+                          id="firstName"
+                          type="text"
+                          placeholder="Jean"
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value)}
+                          required
+                          disabled={isLoading}
+                        />
+                      </motion.div>
+                    </div>
+                    <div className="grid gap-3">
+                      <Label htmlFor="lastName">Nom</Label>
+                      <motion.div
+                        whileFocus={{ scale: 1.01 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Input
+                          id="lastName"
+                          type="text"
+                          placeholder="Dupont"
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
+                          required
+                          disabled={isLoading}
+                        />
+                      </motion.div>
+                    </div>
+                  </motion.div>
+                  
+                  <motion.div
+                    className="grid gap-3"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6, duration: 0.4 }}
+                  >
+                    <Label htmlFor="email">Email</Label>
+                    <motion.div
+                      whileFocus={{ scale: 1.01 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="exemple@email.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        disabled={isLoading}
+                      />
+                    </motion.div>
+                  </motion.div>
+                  
+                  <motion.div
+                    className="grid gap-3"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.7, duration: 0.4 }}
+                  >
+                    <Label htmlFor="password">Mot de passe</Label>
+                    <motion.div
+                      whileFocus={{ scale: 1.01 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Input 
+                        id="password" 
+                        type="password"
+                        placeholder="Au moins 6 caractères"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required 
+                        disabled={isLoading}
+                      />
+                    </motion.div>
+                  </motion.div>
+                  
+                  <motion.div
+                    className="grid gap-3"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8, duration: 0.4 }}
+                  >
+                    <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
+                    <motion.div
+                      whileFocus={{ scale: 1.01 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Input 
+                        id="confirmPassword" 
+                        type="password"
+                        placeholder="Confirmez votre mot de passe"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required 
+                        disabled={isLoading}
+                      />
+                    </motion.div>
+                  </motion.div>
+                  
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.9, duration: 0.4 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                      {isLoading ? "Inscription..." : "Créer mon compte"}
+                    </Button>
+                  </motion.div>
                 </div>
                 
-                <div className="grid gap-3">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="exemple@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    disabled={isLoading}
-                  />
-                </div>
-                
-                <div className="grid gap-3">
-                  <Label htmlFor="password">Mot de passe</Label>
-                  <Input 
-                    id="password" 
-                    type="password"
-                    placeholder="Au moins 6 caractères"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required 
-                    disabled={isLoading}
-                  />
-                </div>
-                
-                <div className="grid gap-3">
-                  <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
-                  <Input 
-                    id="confirmPassword" 
-                    type="password"
-                    placeholder="Confirmez votre mot de passe"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required 
-                    disabled={isLoading}
-                  />
-                </div>
-                
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Inscription..." : "Créer mon compte"}
-                </Button>
+                <motion.div
+                  className="text-center text-sm"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.0, duration: 0.4 }}
+                >
+                  Vous avez déjà un compte ?{" "}
+                  <motion.a 
+                    href="/login" 
+                    className="underline underline-offset-4"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Se connecter
+                  </motion.a>
+                </motion.div>
               </div>
-              
-              <div className="text-center text-sm">
-                Vous avez déjà un compte ?{" "}
-                <a href="/login" className="underline underline-offset-4">
-                  Se connecter
-                </a>
-              </div>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-      <div className="text-muted-foreground text-center text-xs text-balance">
+            </form>
+          </CardContent>
+        </Card>
+      </motion.div>
+      
+      <motion.div 
+        className="text-muted-foreground text-center text-xs text-balance"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.1, duration: 0.4 }}
+      >
         En créant un compte, vous acceptez nos{" "}
-        <a href="/terms" className="underline underline-offset-4 hover:text-primary">
+        <motion.a 
+          href="/terms" 
+          className="underline underline-offset-4 hover:text-primary"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
           Conditions d&apos;utilisation
-        </a>{" "}
+        </motion.a>{" "}
         et notre{" "}
-        <a href="/privacy" className="underline underline-offset-4 hover:text-primary">
+        <motion.a 
+          href="/privacy" 
+          className="underline underline-offset-4 hover:text-primary"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
           Politique de confidentialité
-        </a>.
-      </div>
+        </motion.a>.
+      </motion.div>
     </div>
   )
 }
