@@ -16,7 +16,7 @@ datasource db {
 
 model User {
   id            String    @id
-  name          String    @db.Text
+  name          String    @db.Text // Garde ce champ pour la compatibilité Better Auth
   email         String
   emailVerified Boolean
   image         String?   @db.Text
