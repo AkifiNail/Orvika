@@ -38,14 +38,14 @@ export default function Page() {
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
               {activeItem === "Général" && (
                 <>
-                  <SectionCards />
+                  
                   {/* <DataTable data={data} /> */}
                 </>
               )}
               {activeItem === "Équipe" && (
                 <div>
                   <h2 className="text-xl font-bold mb-4">Section Équipe</h2>
-                  <p>Contenu de l'équipe à ajouter ici...</p>
+                 <SectionCards />
                 </div>
               )}
               {activeItem === "Projets" && (
