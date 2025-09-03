@@ -10,8 +10,10 @@ import {
   SidebarProvider,
 } from "@/components/ui/sidebar"
 import { useSession } from "@/lib/auth" 
-
+import { Button } from "@/components/ui/button"
 import data from "./data.json"
+
+import EquipePage from "./pages/equipe/page"
 
 export default function Page() {
   const { data: session } = useSession()
@@ -43,10 +45,7 @@ export default function Page() {
                 </>
               )}
               {activeItem === "Équipe" && (
-                <div>
-                  <h2 className="text-xl font-bold mb-4">Section Équipe</h2>
-                 <SectionCards />
-                </div>
+                <EquipePage />
               )}
               {activeItem === "Projets" && (
                 <div>
