@@ -4,6 +4,7 @@ import { useSearchParams, useRouter } from "next/navigation"
 import { useEffect, useState, useCallback } from "react"
 import { authClient, useSession } from "@/lib/auth-client"
 import { motion } from "framer-motion"
+import { Navbar } from "@/components/navbar"
 
 export default function AccepteInvitPage() {
     const searchParams = useSearchParams()
@@ -78,6 +79,8 @@ export default function AccepteInvitPage() {
     }, [searchParams, session, inviteId])
 
     return (
+        <>
+        <Navbar />
         <div className="flex flex-col lg:flex-row min-h-screen items-center justify-center gap-8 lg:gap-20 p-4">
             <motion.div 
                 className="text-center space-y-4 sm:space-y-6 w-full max-w-md px-4 sm:px-0"
@@ -152,5 +155,6 @@ export default function AccepteInvitPage() {
             
             <img src="/images/invitation.jpg" alt="Logo" className="w-42 h-42 sm:w-100 sm:h-100 lg:w-150 lg:h-150 object-cover rounded-lg" />
         </div>
+    </>
     )
 }

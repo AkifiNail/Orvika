@@ -21,6 +21,7 @@ export const auth = betterAuth({
   },
   plugins: [
     organization({
+      
       async sendInvitationEmail(data) {
         const inviteLink = `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:3000"}/accepte-invite?id=${data.id}`;
         

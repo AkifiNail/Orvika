@@ -1,12 +1,12 @@
 "use client"
 
-import { use, useState } from "react"
+import { use, useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { EquipeForm } from "@/components/equipe-form"
-import { Plus } from "lucide-react"
+import { Plus, Trash } from "lucide-react"
 import { authClient } from "@/lib/auth-client"
 import { useEffect } from "react"
 import { Team } from "@/type"
@@ -20,6 +20,46 @@ export default function EquipePage() {
     const [inviteEmail, setInviteEmail] = useState("")
     const [isInviteLoading, setIsInviteLoading] = useState(false)
 
+    // Fonction helper pour récupérer les équipes avec les memberships
+    const fetchTeamsWithMemberships = useCallback(async () => {
+        const { data, error } = await authClient.organization.list()
+        console.log("Données reçues de organization.list():", data)
+        
+        if (data && Array.isArray(data)) {
+            const teamsWithMembership = await Promise.all(
+                data.map(async (org) => {
+                    try {
+                        const membersResult = await authClient.organization.getFullOrganization({
+                            query: { organizationId: org.id }
+                        })
+                        
+                        console.log(`Membership pour ${org.name}:`, membersResult)
+                        
+                        const session = await authClient.getSession()
+                        const userMembership = membersResult.data?.members?.find(
+                            member => member.userId === session.data?.user?.id
+                        )
+                        
+                        return {
+                            ...org,
+                            membership: userMembership ? { role: userMembership.role } : undefined
+                        }
+                    } catch (err) {
+                        console.error(`Erreur lors de la récupération des membres pour ${org.name}:`, err)
+                        return org
+                    }
+                })
+            )
+            
+            setTeams(teamsWithMembership)
+        } else if (data) {
+            setTeams(data)
+        }
+        
+        if (error) {
+            console.error("Erreur API:", error)
+        }
+    }, [])
 
     const handleCreateTeam = async (name: string) => {
         setIsLoading(true)
@@ -37,11 +77,8 @@ export default function EquipePage() {
             } else {
                 console.log("Équipe créée avec succès:", data)
                 setIsOpen(false) // Fermer le dialog
-                // Rafraîchir la liste des équipes
-                const { data: updatedTeams } = await authClient.organization.list()
-                if (updatedTeams) {
-                    setTeams(updatedTeams)
-                }
+                // Rafraîchir la liste des équipes avec memberships
+                await fetchTeamsWithMemberships()
                 // Ici tu pourrais ajouter une notification de succès
             }
         } catch (error) {
@@ -55,6 +92,10 @@ export default function EquipePage() {
         setSelectedTeamId(teamId)
         setInviteEmail("") // Reset email
     }
+
+    useEffect(() => {
+        console.log("Équipes:", teams.map((team) => team.membership?.role))
+    }, [teams])
 
     const handleInviteMember = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -92,16 +133,13 @@ export default function EquipePage() {
     useEffect(() => {
         const fetchTeams = async () => {
             try {
-                const { data, error } = await authClient.organization.list()
-                if (data) {
-                  setTeams(data)
-                }
+                await fetchTeamsWithMemberships()
             } catch (error) {
                 console.error("Erreur lors de la récupération des équipes:", error)
             }
         }
         fetchTeams()
-    }, [])
+    }, [fetchTeamsWithMemberships])
 
     return (
         <div className="p-6">
@@ -159,6 +197,18 @@ export default function EquipePage() {
                                 <Plus className="w-4 h-4 mr-2" />
                                 Inviter un membre
                             </Button>
+                            {team.membership?.role === "owner" && 
+                             <Button 
+                                onClick={() => handleTeamInviteModal(team.id)}
+                                variant="outline"
+                                size="sm"
+                                className="mt-2"
+                            >
+                                <Trash className="w-4 h-4 mr-2" />
+                               Supprimer l'équipe
+                            </Button>
+                            }
+                            
                         </div>
                     ))
                 )}

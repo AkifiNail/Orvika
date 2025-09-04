@@ -5,5 +5,8 @@ export type Team = {
     createdAt: Date
     logo?: string | null
     metadata?: any
+     membership?: {
+    role: "owner" | "admin" | "member"
+  }
 }
 
