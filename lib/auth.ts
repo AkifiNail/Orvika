@@ -14,15 +14,32 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     },
   },
-  // Configuration essentielle manquante
   secret: process.env.BETTER_AUTH_SECRET || process.env.NEXTAUTH_SECRET || "your-secret-key-please-change-in-production",
   baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:3000",
-  // Configuration des cookies pour le debug
   advanced: {
     cookiePrefix: "better-auth",
   },
-   plugins: [
-    organization(), 
+  plugins: [
+    organization({
+      async sendInvitationEmail(data) {
+        const inviteLink = `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:3000"}/accepte-invite?id=${data.id}`;
+        
+        // Appel à l'API route pour l'envoi d'email
+        await fetch(`${process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:3000"}/api/send-invitation`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: data.email,
+            invitedByUsername: data.inviter.user.name,
+            invitedByEmail: data.inviter.user.email,
+            teamName: data.organization.name,
+            inviteLink,
+          }),
+        });
+      },
+    }),
   ],
 })
 

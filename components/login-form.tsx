@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { authClient } from "@/lib/auth-client"
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 
 export function LoginForm({
@@ -25,6 +25,8 @@ export function LoginForm({
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const inviteId = searchParams.get('inviteId')
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -40,7 +42,11 @@ export function LoginForm({
       if (result.error) {
         setError(result.error.message as string)
       } else {
-        router.push("/dashboard") // Redirige vers le dashboard ou la page souhaitée
+        // Si il y a un inviteId, le sauvegarder et rediriger vers dashboard
+        if (inviteId) {
+          localStorage.setItem('pendingInviteId', inviteId)
+        }
+        router.push("/dashboard")
       }
     } catch (err) {
       setError("Une erreur est survenue lors de la connexion")
@@ -54,9 +60,14 @@ export function LoginForm({
     setError("")
 
     try {
+      // Sauvegarder l'inviteId dans localStorage pour après l'OAuth
+      if (inviteId) {
+        localStorage.setItem('pendingInviteId', inviteId)
+      }
+      
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/dashboard", // URL de redirection après connexion
+        callbackURL: "/dashboard",
       })
     } catch (err) {
       setError("Erreur lors de la connexion avec Google")
@@ -86,7 +97,10 @@ export function LoginForm({
               transition={{ delay: 0.2, duration: 0.4 }}
             >
               <CardDescription>
-                Connectez-vous avec votre compte Google ou par email
+                {inviteId 
+                  ? "Connectez-vous pour rejoindre l'équipe" 
+                  : "Connectez-vous avec votre compte Google ou par email"
+                }
               </CardDescription>
             </motion.div>
           </CardHeader>

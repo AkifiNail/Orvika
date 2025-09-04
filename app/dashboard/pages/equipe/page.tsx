@@ -3,6 +3,8 @@
 import { use, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { EquipeForm } from "@/components/equipe-form"
 import { Plus } from "lucide-react"
 import { authClient } from "@/lib/auth-client"
@@ -13,6 +15,11 @@ export default function EquipePage() {
     const [isOpen, setIsOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [teams, setTeams] = useState<Team[]>([])
+    const [isInviteOpen, setIsInviteOpen] = useState(false)
+    const [selectedTeamId, setSelectedTeamId] = useState("")
+    const [inviteEmail, setInviteEmail] = useState("")
+    const [isInviteLoading, setIsInviteLoading] = useState(false)
+
 
     const handleCreateTeam = async (name: string) => {
         setIsLoading(true)
@@ -41,6 +48,44 @@ export default function EquipePage() {
             console.error("Erreur:", error)
         } finally {
             setIsLoading(false)
+        }
+    }
+    const handleTeamInviteModal = (teamId: string) => {
+        setIsInviteOpen(true)
+        setSelectedTeamId(teamId)
+        setInviteEmail("") // Reset email
+    }
+
+    const handleInviteMember = async (e: React.FormEvent) => {
+        e.preventDefault()
+        
+        if (!inviteEmail.trim() || !selectedTeamId) {
+            console.error("Email et équipe requis")
+            return
+        }
+
+        setIsInviteLoading(true)
+        
+        try {
+            const { data, error } = await authClient.organization.inviteMember({
+                email: inviteEmail.trim(),
+                role: "member",
+                organizationId: selectedTeamId,
+                resend: true,
+            });
+            
+            if (error) {
+                console.error("Erreur lors de l'invitation:", error)
+            } else {
+                console.log("Invitation envoyée avec succès:", data)
+                setIsInviteOpen(false)
+                setInviteEmail("")
+                setSelectedTeamId("")
+            }
+        } catch (error) {
+            console.error("Erreur:", error)
+        } finally {
+            setIsInviteLoading(false)
         }
     }
    
@@ -105,10 +150,60 @@ export default function EquipePage() {
                             <p className="text-sm text-muted-foreground">
                                 Créée le: {team.createdAt.toLocaleDateString()}
                             </p>
+                            <Button 
+                                onClick={() => handleTeamInviteModal(team.id)}
+                                variant="outline"
+                                size="sm"
+                                className="mt-2"
+                            >
+                                <Plus className="w-4 h-4 mr-2" />
+                                Inviter un membre
+                            </Button>
                         </div>
                     ))
                 )}
             </div>
+            <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Inviter un membre</DialogTitle>
+                        <DialogDescription>
+                            Envoyez une invitation pour rejoindre cette équipe.
+                        </DialogDescription>
+                    </DialogHeader>
+                    
+                    <form onSubmit={handleInviteMember} className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="invite-email">Adresse email</Label>
+                            <Input
+                                id="invite-email"
+                                type="email"
+                                placeholder="exemple@email.com"
+                                value={inviteEmail}
+                                onChange={(e) => setInviteEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+                        
+                        <div className="flex justify-end gap-2">
+                            <Button 
+                                type="button" 
+                                variant="outline" 
+                                onClick={() => setIsInviteOpen(false)}
+                                disabled={isInviteLoading}
+                            >
+                                Annuler
+                            </Button>
+                            <Button 
+                                type="submit" 
+                                disabled={isInviteLoading || !inviteEmail.trim()}
+                            >
+                                {isInviteLoading ? "Envoi..." : "Envoyer l'invitation"}
+                            </Button>
+                        </div>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }	

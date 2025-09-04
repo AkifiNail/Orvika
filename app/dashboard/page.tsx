@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { AppSidebar } from "@/components/app-sidebar"
 import { DataTable } from "@/components/data-table"
 import { SectionCards } from "@/components/section-cards"
@@ -9,7 +10,7 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
-import { useSession } from "@/lib/auth" 
+import { useSession } from "@/lib/auth-client" 
 import { Button } from "@/components/ui/button"
 import data from "./data.json"
 
@@ -18,6 +19,20 @@ import EquipePage from "./pages/equipe/page"
 export default function Page() {
   const { data: session } = useSession()
   const [activeItem, setActiveItem] = useState("Général")
+  const router = useRouter()
+
+  // Vérifier s'il y a une invitation en attente après OAuth Google
+  useEffect(() => {
+    if (session) {
+      const pendingInviteId = localStorage.getItem('pendingInviteId')
+      if (pendingInviteId) {
+        // Nettoyer le localStorage
+        localStorage.removeItem('pendingInviteId')
+        // Rediriger vers la page d'acceptation d'invitation
+        router.push(`/accepte-invite?id=${pendingInviteId}&autoAccept=true`)
+      }
+    }
+  }, [session, router])
 
   return (
     <SidebarProvider
