@@ -1,9 +1,9 @@
 "use client"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useSearchParams, useRouter } from "next/navigation"
 import { useEffect, useState, useCallback } from "react"
 import { authClient, useSession } from "@/lib/auth-client"
+import { motion } from "framer-motion"
 
 export default function AccepteInvitPage() {
     const searchParams = useSearchParams()
@@ -78,43 +78,68 @@ export default function AccepteInvitPage() {
     }, [searchParams, session, inviteId])
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
-            <Card className="w-full max-w-md">
-                <CardHeader className="text-center">
-                    <CardTitle className="text-2xl font-bold">Invitation à rejoindre une équipe</CardTitle>
-                    <CardDescription>
-                        Vous avez été invité à rejoindre une équipe
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
+        <div className="flex flex-col lg:flex-row min-h-screen items-center justify-center gap-8 lg:gap-20 p-4">
+            <motion.div 
+                className="text-center space-y-4 sm:space-y-6 w-full max-w-md px-4 sm:px-0"
+                initial={{ opacity: 0, transform: "translateY(50px)" }}
+                animate={{ opacity: 1, transform: "translateY(0px)" }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+            >
+                <motion.h1 
+                    className="text-2xl sm:text-3xl lg:text-3xl font-bold text-gray-900"
+                    initial={{ opacity: 0, transform: "translateY(30px)" }}
+                    animate={{ opacity: 1, transform: "translateY(0px)" }}
+                    transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+                >
+                    Une invitation vous attend
+                </motion.h1>
+                
+                <motion.p 
+                    className="text-base sm:text-lg text-gray-600"
+                    initial={{ opacity: 0, transform: "translateY(20px)" }}
+                    animate={{ opacity: 1, transform: "translateY(0px)" }}
+                    transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+                >
+                    Vous avez été invité à rejoindre une équipe
+                </motion.p>
+                
+                <motion.div
+                    initial={{ opacity: 0, transform: "translateY(20px)" }}
+                    animate={{ opacity: 1, transform: "translateY(0px)" }}
+                    transition={{ duration: 0.6, delay: 0.6, ease: "easeOut" }}
+                >
                     {inviteId ? (
-                        <div className="space-y-3">
-                            <div className="text-center p-3 bg-blue-50 rounded-lg border border-blue-200">
-                                <p className="text-sm font-medium text-blue-800">Code d'invitation</p>
-                                <p className="text-xs text-blue-600 font-mono mt-1">{inviteId}</p>
-                            </div>
+                        <div className="space-y-4">
                             {!session && !isPending && (
-                                <div className="text-center p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                                    <p className="text-sm font-medium text-yellow-800">Connexion requise</p>
-                                    <p className="text-xs text-yellow-600 mt-1">Vous allez être redirigé vers la page de connexion</p>
-                                </div>
+                                <p className="text-yellow-600">
+                                    Connexion requise - Vous allez être redirigé vers la page de connexion
+                                </p>
                             )}
                             {session && (
-                                <div className="text-center text-sm text-gray-600">
+                                <p className="text-gray-600">
                                     En cliquant sur "Rejoindre", vous acceptez de faire partie de cette équipe.
-                                </div>
+                                </p>
                             )}
                         </div>
                     ) : (
-                        <div className="text-center p-3 bg-red-50 rounded-lg border border-red-200">
-                            <p className="text-sm text-red-800">Aucun code d'invitation trouvé</p>
-                            <p className="text-xs text-red-600 mt-1">Vérifiez que le lien d'invitation est correct</p>
-                            <p className="text-xs text-red-500 mt-2">Redirection vers le dashboard dans quelques secondes...</p>
+                        <div className="text-red-600">
+                            <p>Aucun code d'invitation trouvé</p>
+                            <p className="text-sm mt-1">Vérifiez que le lien d'invitation est correct</p>
+                            <p className="text-sm mt-2">Redirection vers le dashboard dans quelques secondes...</p>
                         </div>
                     )}
+                </motion.div>
+                
+                <motion.div
+                    initial={{ opacity: 0, transform: "translateY(20px) scale(0.95)" }}
+                    animate={{ opacity: 1, transform: "translateY(0px) scale(1)" }}
+                    transition={{ duration: 0.6, delay: 0.8, ease: "easeOut" }}
+                    whileHover={{ transform: "scale(1.02)" }}
+                    whileTap={{ transform: "scale(0.98)" }}
+                >
                     <Button 
                         onClick={handleJoinTeam}
-                        className="w-full"
+                        className="w-full hover:cursor-pointer"
                         size="lg"
                         disabled={!inviteId || isLoading || !session}
                     >
@@ -122,8 +147,10 @@ export default function AccepteInvitPage() {
                          !session ? "Connexion requise" :
                          inviteId ? "Rejoindre l'équipe" : "Lien d'invitation invalide"}
                     </Button>
-                </CardContent>
-            </Card>
+                </motion.div>
+            </motion.div>
+            
+            <img src="/images/invitation.jpg" alt="Logo" className="w-42 h-42 sm:w-100 sm:h-100 lg:w-150 lg:h-150 object-cover rounded-lg" />
         </div>
     )
 }

@@ -2,10 +2,22 @@
 
 import { GalleryVerticalEnd } from "lucide-react"
 import { motion } from "framer-motion"
+import { useSession } from "@/lib/auth-client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 import { LoginForm } from "@/components/login-form"
 
 export default function LoginPage() {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session) {
+      router.push("/dashboard");
+    }
+  }, [session, router]);
+
   return (
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
       <motion.div 
