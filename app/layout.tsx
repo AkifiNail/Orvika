@@ -1,6 +1,7 @@
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Outfit } from "next/font/google"
+import { Toaster } from "@/components/ui/sonner"
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -24,6 +25,7 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           {children}
+            <Toaster />
         </ThemeProvider>
       </body>
     </html>

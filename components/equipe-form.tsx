@@ -9,11 +9,12 @@ import { Loader2 } from "lucide-react"
 interface EquipeFormProps {
   onSubmit?: (name: string) => void
   isLoading?: boolean
+   error?: string
 }
 
-export function EquipeForm({ onSubmit, isLoading = false }: EquipeFormProps) {
+export function EquipeForm({ onSubmit, isLoading = false, error: errorProps }: EquipeFormProps) {
   const [name, setName] = useState("")
-  const [error, setError] = useState("")
+  const [error, setError] = useState(errorProps)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -39,13 +40,13 @@ export function EquipeForm({ onSubmit, isLoading = false }: EquipeFormProps) {
           value={name}
           onChange={(e) => {
             setName(e.target.value)
-            if (error) setError("")
+            if (errorProps) setError("")
           }}
-          className={error ? "border-destructive" : ""}
+          className={errorProps ? "border-destructive" : ""}
           disabled={isLoading}
         />
-        {error && (
-          <p className="text-sm text-destructive">{error}</p>
+        {errorProps && (
+          <p className="text-sm text-destructive">{errorProps}</p>
         )}
       </div>
 

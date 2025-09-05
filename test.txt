@@ -1,0 +1,98 @@
+    {/* Liste des équipes existantes */}
+            {/* <div className="space-y-4">
+                {teams.length === 0 ? (
+                    <p className="text-muted-foreground">Aucune équipe pour le moment. Créez votre première équipe !</p>
+                ) : (
+                    teams.map((team) => (
+                        <div key={team.id} className="p-4 border rounded-lg">
+                            <h2 className="text-lg font-semibold">{team.name}</h2>
+                            <p className="text-muted-foreground">Slug: {team.slug}</p>
+                            {team.logo && <p>Logo: {team.logo}</p>}
+                            <p className="text-sm text-muted-foreground">
+                                Créée le: {team.createdAt.toLocaleDateString()}
+                            </p>
+                             {team.membership?.role === "owner" && 
+                             <>
+                            <Button 
+                                onClick={() => handleTeamInviteModal(team.id)}
+                                variant="outline"
+                                size="sm"
+                                className="mt-2"
+                            >
+                                <Plus className="w-4 h-4 mr-2" />
+                                Inviter un membre
+                            </Button>
+                           
+                             <Button 
+                                onClick={() => handleDeleteTeamModal(team.id)}
+                                variant="outline"
+                                size="sm"
+                                className="mt-2"
+                            >
+                                <Trash className="w-4 h-4 mr-2" />
+                               Supprimer l'équipe
+                            </Button>
+                            </>
+                            }
+                                                        
+                        </div>
+                    ))
+                )}
+            </div>
+            <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Inviter un membre</DialogTitle>
+                        <DialogDescription>
+                            Envoyez une invitation pour rejoindre cette équipe.
+                        </DialogDescription>
+                    </DialogHeader>
+                    
+                    <form onSubmit={handleInviteMember} className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="invite-email">Adresse email</Label>
+                            <Input
+                                id="invite-email"
+                                type="email"
+                                placeholder="exemple@email.com"
+                                value={inviteEmail}
+                                onChange={(e) => setInviteEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+                        
+                        <div className="flex justify-end gap-2">
+                            <Button 
+                                type="button" 
+                                variant="outline" 
+                                onClick={() => setIsInviteOpen(false)}
+                                disabled={isInviteLoading}
+                            >
+                                Annuler
+                            </Button>
+                            <Button 
+                                type="submit" 
+                                disabled={isInviteLoading || !inviteEmail.trim()}
+                            >
+                                {isInviteLoading ? "Envoi..." : "Envoyer l'invitation"}
+                            </Button>
+                        </div>
+                    </form>
+                </DialogContent>
+            </Dialog>
+            <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Supprimer l'équipe</DialogTitle>
+                        <DialogDescription>
+                            Entrez le nom de l'équipe pour confirmer la suppression. 
+                            <br />
+                            Nom de l'équipe: <b className="bold text-black">  {teams.find(team => team.id === selectedTeamId)?.name}</b> 
+                        </DialogDescription>
+                    </DialogHeader> 
+                    <Input type="text" value={inputDeleteTeam} onChange={(e) => setInputDeleteTeam(e.target.value)} />
+                    <Button variant="destructive" disabled={inputDeleteTeam !== teams.find(team => team.id === selectedTeamId)?.name} onClick={() => handleDeleteTeam(selectedTeamId)}>
+                        Supprimer l'équipe
+                    </Button>
+                </DialogContent>
+            </Dialog> */}
