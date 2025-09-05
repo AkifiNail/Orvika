@@ -19,6 +19,7 @@ export default function EquipePage() {
     const [selectedTeamId, setSelectedTeamId] = useState("")
     const [inviteEmail, setInviteEmail] = useState("")
     const [isInviteLoading, setIsInviteLoading] = useState(false)
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false)
 
     // Fonction helper pour récupérer les équipes avec les memberships
     const fetchTeamsWithMemberships = useCallback(async () => {
@@ -60,6 +61,19 @@ export default function EquipePage() {
             console.error("Erreur API:", error)
         }
     }, [])
+
+
+    const handleDeleteTeamModal = (teamId: string) => {
+        setIsDeleteOpen(true)
+        setSelectedTeamId(teamId)
+    }
+
+    const handleDeleteTeam = async (teamId: string) => {
+        setIsLoading(true)
+        await authClient.organization.delete({ organizationId: teamId })
+        setIsDeleteOpen(false)
+        await fetchTeamsWithMemberships()
+    }
 
     const handleCreateTeam = async (name: string) => {
         setIsLoading(true)
@@ -199,7 +213,7 @@ export default function EquipePage() {
                             </Button>
                             {team.membership?.role === "owner" && 
                              <Button 
-                                onClick={() => handleTeamInviteModal(team.id)}
+                                onClick={() => handleDeleteTeamModal(team.id)}
                                 variant="outline"
                                 size="sm"
                                 className="mt-2"
@@ -252,6 +266,16 @@ export default function EquipePage() {
                             </Button>
                         </div>
                     </form>
+                </DialogContent>
+            </Dialog>
+            <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Supprimer l'équipe</DialogTitle>
+                    </DialogHeader> 
+                    <Button variant="destructive" onClick={() => handleDeleteTeam(selectedTeamId)}>
+                        Supprimer l'équipe
+                    </Button>
                 </DialogContent>
             </Dialog>
         </div>
