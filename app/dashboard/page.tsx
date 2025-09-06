@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/sidebar"
 import { useSession } from "@/lib/auth-client" 
 import { Button } from "@/components/ui/button"
-import data from "./data.json"
+import General from "./pages/general/page"
 
 import EquipePage from "./pages/equipe/page"
 
@@ -55,8 +55,7 @@ export default function Page() {
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
               {activeItem === "Général" && (
                 <>
-                  
-                  {/* <DataTable data={data} /> */}
+                 <General />
                 </>
               )}
               {activeItem === "Équipe" && (
